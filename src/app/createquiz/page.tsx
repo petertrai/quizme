@@ -1,11 +1,20 @@
+import QuizCreation from '@/components/QuizCreation'
+import { getAuthSession } from '@/lib/nextauth'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
 type Props = {}
 
-const CreateQuiz = (props: Props) => {
-  return (
-    <div>CreateQuiz</div>
-  )
+export  const metadata = {
+  title: "Cre8 | QuizMe"
+}
+
+const CreateQuiz = async (props: Props) => {
+  const session = await getAuthSession()
+  if (!session?.user) {
+    redirect('/')
+  }
+  return <QuizCreation />
 }
 
 export default CreateQuiz

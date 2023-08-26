@@ -11,7 +11,7 @@ const HotTopicsCard = (props: Props) => {
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Popular Topics</CardTitle>
           <CardDescription>
-            Click on a topic to open a quiz on it!
+            Click on any topic to open its quiz!
           </CardDescription>
         </CardHeader>
         <CardContent className="pl-2">
