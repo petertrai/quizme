@@ -30,17 +30,17 @@ const UserAccountNav = ({ user }: Props) => {
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {user.name && <p className="w-[200px] truncate text-sm text-zinc-700">{user.name}</p>}
-            {user.email && (
+            {/* {user.email && (
               <p className="w-[200px] truncate text-sm text-zinc-700">
                 {user.email}
               </p>
-            )}
+            )} */}
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
+        {/* <DropdownMenuItem asChild>
           <Link href="/" className="w-[200px] truncate text-sm text-zinc-700">Cat</Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuItem
           onClick={(e) => {
             e.preventDefault();
