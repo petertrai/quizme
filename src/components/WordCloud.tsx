@@ -30,7 +30,10 @@ const WordCloud = (props: Props) => {
         rotate={0}
         fontSize={fontSizeMapper}
         padding={10}
-        fill={theme.theme == "dark" ? "white" : "black"}
+        fill={theme.theme === "dark" ? "white" :
+        theme.theme === "system" ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "white" : "black") :
+        theme.theme === "light" ? "black" :
+        "black"}
       />
     </>
   );

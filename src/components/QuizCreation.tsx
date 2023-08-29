@@ -23,24 +23,48 @@ import {
 } from "./ui/form";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 
 type Props = {};
 
 type Input = z.infer<typeof quizCreationSchema>;
 
 const QuizCreation = (props: Props) => {
+  const { mutate: getQuestions, isLoading } = useMutation({
+    mutationFn: async ({ amount, topic, type }: Input) => {
+      const response = await axios.post("api/game", {
+        amount,
+        topic,
+        type,
+      });
+      return response.data;
+    },
+  });
+
   const form = useForm<Input>({
     resolver: zodResolver(quizCreationSchema),
     defaultValues: {
       amount: 3,
       topic: "",
-      type: "mcq",
+      type: "open_ended",
     },
   });
 
   function onSubmit(input: Input) {
-    alert(JSON.stringify(input, null, 2));
+    getQuestions({
+      amount: input.amount,
+      topic: input.topic,
+      type: input.type,
+    }, 
+    {
+      onSuccess({gameId})
+    }
+    );
   }
+
+  form.watch();
 
   return (
     <div className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
@@ -59,16 +83,64 @@ const QuizCreation = (props: Props) => {
                   <FormItem>
                     <FormLabel>Topic</FormLabel>
                     <FormControl>
-                      <Input placeholder="shadcn" {...field} />
+                      <Input placeholder="Enter a topic" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      This is what you will be quizzed on.
-                    </FormDescription>
+                    <FormDescription>Please provide a topic.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Number of questions?</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter an amount."
+                        {...field}
+                        type="number"
+                        min={1}
+                        max={10}
+                        onChange={(e) => {
+                          form.setValue("amount", parseInt(e.target.value));
+                        }}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex flex-row">
+                <Tabs defaultValue="open_ended" className="w-[300px]">
+                  <TabsList>
+                    <TabsTrigger
+                      onClick={() => {
+                        form.setValue("type", "open_ended");
+                      }}
+                      value="open_ended"
+                    >
+                      Fill in the Blank
+                    </TabsTrigger>
+                    <TabsTrigger
+                      onClick={() => {
+                        form.setValue("type", "mcq");
+                      }}
+                      value="mcq"
+                    >
+                      Multiple Choice
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
+              <Button
+                // disabled={isLoading}
+                type="submit"
+              >
+                Submit
+              </Button>
             </form>
           </Form>
         </CardContent>
